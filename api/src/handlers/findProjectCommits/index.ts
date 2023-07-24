@@ -1,8 +1,9 @@
+import { githubService } from '../../services'
 import { Commit, Pagination } from '../../types'
+import parseGitHubURL from '../../utils/parseGithubURL'
 
 export interface FindProjectCommitsRequest {
     url: string
-    username: string
     branch?: string
     pagination: Pagination
 }
@@ -11,11 +12,19 @@ export interface FindProjectCommitsResponse {
     commits: Commit[]
 }
 
-function findProjectCommits(
+async function findProjectCommits(
     request: FindProjectCommitsRequest,
 ): Promise<FindProjectCommitsResponse> {
-    console.log('findProjectCommits', request)
-    throw new Error('Not implemented')
+    const { repo, owner } = parseGitHubURL(request.url)
+
+    const commits = await githubService.findCommits({
+        owner,
+        repository: repo,
+        pagination: request.pagination,
+        branch: request.branch,
+    })
+
+    return { commits }
 }
 
 export default findProjectCommits
