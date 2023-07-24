@@ -4,6 +4,7 @@ const config: Config.InitialOptions = {
     transform: {
         '^.+\\.tsx?$': 'ts-jest',
     },
+    setupFiles: ['dotenv/config'],
 }
 
 export default config
