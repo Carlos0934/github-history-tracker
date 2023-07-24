@@ -1,4 +1,4 @@
-import { Commit, Pagination } from '../types'
+import { Commit, Pagination } from '../../types'
 
 export interface FindProjectCommitsRequest {
     url: string
