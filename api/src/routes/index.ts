@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
-import commitRouter from './commits'
+import projectRouter from './project'
 
 const router = new Hono()
 
-router.route('/commits', commitRouter)
+router.route('/projects', projectRouter)
 
 export default router
