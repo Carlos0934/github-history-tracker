@@ -6,9 +6,9 @@ const findProjectBranchesRequestSchema = z.object({
     url: z.string(),
 })
 
-const findProjectCommitsRequestValidator = zValidator(
+const findProjectBranchValidator = zValidator(
     'query',
     findProjectBranchesRequestSchema,
 )
 
-export default findProjectCommitsRequestValidator
+export default findProjectBranchValidator
