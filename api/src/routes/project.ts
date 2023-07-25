@@ -3,6 +3,8 @@ import findProjectCommitsRequestValidator from '../handlers/findProjectCommits/v
 import findProjectCommits, {
     FindProjectCommitsRequest,
 } from '../handlers/findProjectCommits'
+import findProjectBranches from '../handlers/findProjectBranches'
+import findProjectBranchesValidator from '../handlers/findProjectBranches/validator'
 
 const projectRouter = new Hono()
 
@@ -25,4 +27,13 @@ projectRouter.get(
         return ctx.json(res)
     },
 )
+
+projectRouter.get('/branches', findProjectBranchesValidator, async (ctx) => {
+    const { url } = ctx.req.valid('query')
+
+    const res = await findProjectBranches({ url })
+
+    return ctx.json(res)
+})
+
 export default projectRouter
