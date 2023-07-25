@@ -15,11 +15,11 @@ export interface FindProjectCommitsResponse {
 async function findProjectCommits(
     request: FindProjectCommitsRequest,
 ): Promise<FindProjectCommitsResponse> {
-    const { repo, owner } = parseGitHubURL(request.url)
+    const { repository, owner } = parseGitHubURL(request.url)
 
     const commits = await githubService.findCommits({
         owner,
-        repository: repo,
+        repository: repository,
         pagination: request.pagination,
         branch: request.branch,
     })

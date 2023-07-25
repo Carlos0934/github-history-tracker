@@ -30,3 +30,13 @@ export interface Pagination {
     page: number
     perPage: number
 }
+
+export interface Branch {
+    name: string
+    commit: BranchCommit
+}
+
+export interface BranchCommit {
+    sha: string
+    url: string
+}

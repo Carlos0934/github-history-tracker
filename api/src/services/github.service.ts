@@ -1,4 +1,4 @@
-import { Commit, Pagination } from '../types'
+import { Branch, Commit, Pagination } from '../types'
 
 interface FindCommitsParams {
     repository: string
@@ -6,7 +6,10 @@ interface FindCommitsParams {
     branch?: string
     pagination: Pagination
 }
-
+interface FindBranchesParams {
+    repository: string
+    owner: string
+}
 export class GithubService {
     constructor(private readonly token: string) {}
     async findCommits({
@@ -42,6 +45,34 @@ export class GithubService {
         const commits = await res.json()
 
         return commits.map(this.mapResponseToCommit)
+    }
+
+    async findBranches({
+        repository,
+        owner,
+    }: FindBranchesParams): Promise<Branch[]> {
+        const url = `https://api.github.com/repos/${owner}/${repository}/branches`
+
+        const res = await fetch(url, {
+            headers: {
+                Authorization: `Bearer  ${this.token}`,
+            },
+        })
+
+        // Return empty array if not authorized to access the repository
+
+        if (res.status === 401) return []
+
+        if (!res.ok) {
+            console.error('Error fetching branches', res.status)
+            const error = await res.json()
+            console.error('Error fetching branches', error)
+            throw new Error('Error fetching branches')
+        }
+
+        const branches = await res.json()
+
+        return branches
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
