@@ -1,19 +1,16 @@
-import { z, Schema } from 'zod'
-import { FindProjectCommitsRequest } from '.'
+import { z } from 'zod'
+
 import { zValidator } from '@hono/zod-validator'
 
-const findProjectCommitsRequestSchema: Schema<FindProjectCommitsRequest> =
-    z.object({
-        url: z.string(),
-        branch: z.string().optional(),
-        pagination: z.object({
-            page: z.number(),
-            perPage: z.number(),
-        }),
-    })
+const findProjectCommitsRequestSchema = z.object({
+    url: z.string(),
+    branch: z.string().optional(),
+    page: z.string().transform((x) => parseInt(x)),
+    perPage: z.string().transform((x) => parseInt(x)),
+})
 
 const findProjectCommitsRequestValidator = zValidator(
-    'json',
+    'query',
     findProjectCommitsRequestSchema,
 )
 
