@@ -80,3 +80,12 @@ docker-compose up
 ```
 
 4. Open the application in your browser at http://localhost:8000
+
+
+## Future improvements
+- Deploy the application with docker to AWS with ECS
+- Add frontend tests
+- Add E2E tests
+- Add Continuous Integration and Continuous Deployment with Github Actions
+- Sign in with github through oauth to remove the need for a github token
+- Add Webhooks to the api to automatically fetch data when a new commit is pushed to the repository through SSE (Server Sent Events)
