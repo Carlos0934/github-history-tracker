@@ -45,7 +45,9 @@ function CommitList({ url }: CommitListProps) {
         )}
       </CommitListHeader>
 
-      <ul className="overflow-y-auto h-[300px] ">
+      <ul
+        className={`overflow-y-auto h-[300px] ${isFetching && "opacity-50"}  `}
+      >
         {commits?.map((commit, i, commits) => (
           <CommitListItem
             key={commit.sha}

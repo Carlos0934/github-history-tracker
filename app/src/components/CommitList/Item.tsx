@@ -19,8 +19,8 @@ export const CommitListItem = forwardRef<HTMLLIElement, CommitListItemProps>(
             alt={data.commit.author.name}
             className="w-10 h-10 rounded-full"
           />
-          <div className="flex flex-col">
-            <p className="text-sm font-medium text-left text-primary-100">
+          <div className="flex flex-col text-left">
+            <p className="text-sm font-medium text-primary-100">
               {data.commit.author.name}
             </p>
             <p className="text-xs text-primary-300">
