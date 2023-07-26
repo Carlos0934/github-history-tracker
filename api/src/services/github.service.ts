@@ -93,6 +93,7 @@ export class GithubService {
             node_id: commit.node_id,
             sha: commit.sha,
             url: commit.url,
+            html_url: commit.html_url,
         }
     }
 }

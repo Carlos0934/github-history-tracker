@@ -4,6 +4,7 @@ export interface Commit {
     node_id: string
     commit: GitCommit
     author: CommitAuthor
+    html_url: string
 }
 
 export interface CommitAuthor {
