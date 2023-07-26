@@ -58,9 +58,25 @@ cd app && npm start
 5. Open the application in your browser
 
 
+### How to run with docker
 
+1. Clone the repository
 
+```bash
+git clone https://github.com/Carlos0934/github-history-tracker
+```
 
+2. Add environment variables in root directory, rename .env.example to .env
+```bash
+GITHUB_TOKEN= # Your github token
+PORT=3000 # Port where the api will 
+VITE_API_URL=http://localhost:3000/api # Url where the app will fetch data from
+```
+ 
+3. Run the application
 
+```bash
+docker-compose up
+```
 
-
+4. Open the application in your browser at http://localhost:8000
