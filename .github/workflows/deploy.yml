@@ -1,0 +1,73 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push API image to Amazon ECR
+        working-directory: ./api
+        env:
+          GHB_TOKEN: ${{ secrets.GHB_TOKEN }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: github-history-tracker-api
+          IMAGE_TAG: latest
+
+        run: |
+          docker build --build-arg NODE_ENV=production --build-arg PORT=3000 --build-arg GITHUB_TOKEN=${GHB_TOKEN} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Build, tag, and push APP image to Amazon ECR
+        working-directory: ./app
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: github-history-tracker-app
+          IMAGE_TAG: latest
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Pull & Deploy image to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOSTNAME: ${{secrets.SSH_HOST}}
+          USER_NAME: ${{secrets.USER_NAME}}
+
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
+          # stop and remove existing containers
+
+          docker stop github-history-tracker-api
+          docker stop  github-history-tracker-app
+
+          docker rm github-history-tracker-api
+          docker rm github-history-tracker-app
+
+          # pull latest images
+
+          docker pull 556737114908.dkr.ecr.us-east-1.amazonaws.com/github-history-tracker-api:latest
+          docker pull 556737114908.dkr.ecr.us-east-1.amazonaws.com/github-history-tracker-app:latest
+
+          docker run -d -p 3000:3000 --name github-history-tracker-api 556737114908.dkr.ecr.us-east-1.amazonaws.com/github-history-tracker-api:latest
+          docker run -d -p 8000:80 --name github-history-tracker-app 556737114908.dkr.ecr.us-east-1.amazonaws.com/github-history-tracker-app:latest
+          '
