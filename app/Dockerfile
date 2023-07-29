@@ -9,10 +9,9 @@ ENV VITE_API_URL=${API_URL}
 
 WORKDIR /app
 
-COPY package.json /app
-COPY package-lock.json /app
+COPY package*.json ./
 
-RUN npm ci
+RUN npm install
 
 
 COPY . /app
