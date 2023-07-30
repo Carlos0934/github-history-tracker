@@ -13,7 +13,7 @@ jobs:
       matrix:
         node-version: [20.x]
     env:
-      GHB_TOKEN: ${{ secrets.GHB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GHB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
