@@ -9,6 +9,7 @@
     "start": "node ./dist/src/index.js",
     "lint": "eslint --ext .ts src/",
     "format": "prettier --write \"src/**/*.ts\"",
+    "check": "eslint --ext .ts src/ && prettier --write \"src/**/*.ts\" && tsc --noEmit",
     "prebuild": "rimraf dist && npm run lint",
     "prestart": "npm run build",
     "test": "jest"

@@ -6,15 +6,16 @@ function useIntersectionObserver(
   options?: IntersectionObserverInit
 ) {
   useEffect(() => {
+    const current = element.current;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) callback();
       });
     }, options);
-    if (element.current) observer.observe(element.current);
+    if (current) observer.observe(current);
 
     return () => {
-      if (element.current) observer.unobserve(element.current);
+      if (current) observer.unobserve(current);
     };
   }, [element, callback, options]);
 }
