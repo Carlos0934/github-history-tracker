@@ -1,0 +1,64 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  api-integration:
+    name: API Integration
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+    env:
+      GHB_TOKEN: ${{ secrets.GHB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Run checks
+        working-directory: ./api
+        run: npm run check
+
+      - name: Run tests
+        working-directory: ./api
+        run: npm test
+
+      - name: Build
+        working-directory: ./api
+        run: npm run build
+
+  app-integration:
+    name: APP Integration
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        working-directory: ./app
+        run: npm ci
+
+      - name: Run lint
+        working-directory: ./app
+        run: npm run lint
+
+      - name: Build
+        working-directory: ./app
+        run: npm run build
